@@ -7,6 +7,7 @@ struct Position {
 	int floor, section;
 	Position(int _floor, int _section);
 	bool operator<(const Position &b) const;
+	bool operator==(const Position &b) const;
 };
 
 struct Player {
