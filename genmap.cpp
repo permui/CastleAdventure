@@ -1,6 +1,8 @@
 #include <vector>
 #include <map>
 #include <iostream>
+#include <random>
+#include <cassert>
 #include "base.hpp"
 #include "genmap.hpp"
 #include "config.hpp"
@@ -17,10 +19,10 @@ vector<Grid> GenGrids() {
 			"entry",
 			"This is the entry of the castle.",
 			{
-				{"quit", [](Player& player, Grid&)->void {
+				{"quit", [](Player& player, Grid&, Map&)->void {
 					player.pos = QUIT_POS;
 				}},
-				{"success", [](Player &player, Grid&)->void {
+				{"success", [](Player &player, Grid&, Map&)->void {
 					if (player.with_princess) {
 						cout << "Rescue princess successful!" << endl;
 						player.pos = SUCC_POS;
@@ -50,7 +52,7 @@ vector<Grid> GenGrids() {
 			"a shield that can defend against one time of monster attact: 10 BTC\n"
 			"a sword that can kill a monster: 15 BTC\n"),
 			{
-				{"buy_shield", [](Player &player, Grid&)->void {
+				{"buy_shield", [](Player &player, Grid&, Map&)->void {
 					if (player.btc < shield_price) {
 						cout << "You don't have enough money to buy it..." << endl;
 					} else {
@@ -58,7 +60,7 @@ vector<Grid> GenGrids() {
 						player.shield += 1;
 					}
 				}},
-				{"buy_sword", [](Player &player, Grid&)->void {
+				{"buy_sword", [](Player &player, Grid&, Map&)->void {
 					if (player.btc < sword_price) {
 						cout << "You don't have enough money to buy it..." << endl;
 					} else {
@@ -100,7 +102,8 @@ vector<Grid> GenGrids() {
 			{
 				{"go_up", Goto<2, 6>},
 				{"go_right", Goto<2, 8>},
-				{"go_down", Goto<2, 7>}
+				{"go_down", Goto<2, 7>},
+				{"go_left", Goto<2, 4>}
 			}
 		},
 		{
@@ -144,10 +147,104 @@ vector<Grid> GenGrids() {
 				{"go_right", Goto<3, 10>}
 			}
 		},
-		// {
-		// 	{3, 10}
-		// }
+		{
+			{3, 10},
+			GT::None,
+			"CorridorEntry",
+			"On your right is a corridor, with many monsters in it. Go ahead, warrior!",
+			{
+				{"go_left", Goto<3, 9>},
+				{"go_right", Goto<3, 11>}
+			}
+		},
+		{
+			{3, 11},
+			GT::MayHaveMonster,
+			"Corridor Step 1",
+			"",
+			{
+				{"go_left", Goto<3, 10>},
+				{"go_right", Goto<3, 12>}
+			}
+		},
+		{
+			{3, 12},
+			GT::MayHaveMonster,
+			"Corridor Step 2",
+			"",
+			{
+				{"go_left", Goto<3, 11>},
+				{"go_right", Goto<3, 13>}
+			}
+		},
+		{
+			{3, 13},
+			GT::MayHaveMonster,
+			"Corridor Step 3",
+			"",
+			{
+				{"go_left", Goto<3, 12>},
+				{"go_right", Goto<3, 14>}
+			}
+		},
+		{
+			{3, 14},
+			GT::MayHaveMonster,
+			"Corridor Step 4",
+			"",
+			{
+				{"go_left", Goto<3, 13>},
+				{"go_right", Goto<3, 15>}
+			}
+		},
+		{
+			{3, 15},
+			GT::MayHaveMonster,
+			"Corridor Step 5",
+			"",
+			{
+				{"go_left", Goto<3, 16>},
+				{"go_right", Goto<3, 14>}
+			}
+		},
+		{
+			{3, 16},
+			GT::Princess,
+			"Princess' Place",
+			"",
+			{
+				{"go_left", Goto<3, 15>},
+				{"go_right", Goto<3, 17>}	
+			}
+		},
+		{
+			{3, 17},
+			GT::None,
+			"Teleporter",
+			"Give me 20 BitCoins and you will be transported to a random place in the castle!",
+			{
+				{"go_left", Goto<3, 16>},
+				{"teleport", [](Player &player, Grid&, Map &mp)->void {
+					if (player.btc < tele_price) {
+						cout << "You don't have " << tele_price << " BitCoins. Work hard, man!" << endl;
+						return;
+					}
+					assert(!mp.empty());
+					default_random_engine eng((random_device())());
+					uniform_int_distribution<int> dis(0, (int)mp.size() - 1);
+					int num = dis(eng);
+					Map::iterator it = mp.begin();
+					while (num--) ++it;
+					player.pos = it->first;
+				}}
+			}
+		}
 	};
+	default_random_engine eng((random_device())());
+	uniform_real_distribution<double> dis(0, 1);
+	for (Grid &grid: ret) if (grid.info.t == GT::MayHaveMonster) {
+		grid.info.t = dis(eng) < monster_probability ? GT::Monster : GT::None;
+	}
 	return ret;
 }
 

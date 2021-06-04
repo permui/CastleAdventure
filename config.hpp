@@ -16,4 +16,6 @@ const int add_award = 2;
 const int mul_award = 4;
 const int int_award = 6;
 
+const int tele_price = 20;
+
 #endif

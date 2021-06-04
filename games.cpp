@@ -3,15 +3,15 @@
 
 namespace games {
 	//TODO
-	void add_game(Player&, Grid&) {
+	void add_game(Player&, Grid&, Map&) {
+		
+	}
+
+	void mul_game(Player&, Grid&, Map&) {
 
 	}
 
-	void mul_game(Player&, Grid&) {
-
-	}
-
-	void int_game(Player&, Grid&) {
+	void int_game(Player&, Grid&, Map&) {
 
 	}
 

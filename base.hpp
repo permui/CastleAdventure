@@ -14,6 +14,13 @@ struct Position {
 	bool operator==(const Position &b) const;
 };
 
+struct Info {
+	GT t;
+	Info(GT _t);
+};
+
+struct Grid;
+
 struct Player {
 	Position pos;
 	int shield, sword;
@@ -23,14 +30,9 @@ struct Player {
 	void show_state(const Grid &grid) const;
 };
 
-struct Info {
-	GT t;
-	Info(GT _t);
-};
+typedef std::map<Position, Grid> Map;
 
-struct Grid;
-
-typedef std::function<void(Player&, Grid&)> Action;
+typedef std::function<void(Player&, Grid&, Map&)> Action;
 
 struct Grid {
 	Position pos;

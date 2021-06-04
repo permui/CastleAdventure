@@ -5,10 +5,24 @@
 #include <string>
 #include "command.hpp"
 #include "base.hpp"
+#include "config.hpp"
 
 using std::cout, std::endl, std::string, std::map;
 
 void Command(Player &player, Grid &grid, map<Position, Grid> &mp) {
+	switch (grid.info.t) {
+		case GT::Monster: {
+			EncounterMonster(player, grid);
+			if (player.pos == FAIL_POS || player.pos == QUIT_POS) return;
+			break;
+		}
+		case GT::Princess: {
+			EncounterPrincess(player, grid);
+			break;
+		}
+		default:
+			break;
+	}
 	cout << "Commands:";
 	if (grid.commands.empty()) {
 		// if the design is right, this is impossible
@@ -24,5 +38,47 @@ void Command(Player &player, Grid &grid, map<Position, Grid> &mp) {
 		if (it != grid.commands.end()) break;
 		cout << "given command not available, see the command list" << endl;
 	}
-	it->second(player, grid);
+	it->second(player, grid, mp);
+}
+
+void EncounterMonster(Player &player, Grid &grid) {
+	cout << "Encounter Monster!" << endl;
+	cout << "Commands: use_shield use_sword give_up" << endl;
+	while (true) {
+		string com = GetA<string>();
+		if (com == "use_shield") {
+			if (player.shield > 0) {
+				--player.shield;
+				break;
+			}
+			cout << "not enough shield, choose an alternative" << endl;
+		} else if (com == "use_sword") {
+			if (player.sword > 0) {
+				--player.sword;
+				grid.info.t = GT::None;
+				break;
+			}
+			cout << "not enogh sword, choose an alternative" << endl;
+		} else if (com == "give_up") {
+			player.pos = FAIL_POS;
+			break;
+		} else {
+			cout << "given command not available, see the command list" << endl;
+		}
+	}
+}
+
+void EncounterPrincess(Player &player, Grid &grid) {
+	cout << "Lovely Princess Here!" << endl;
+	cout << "Commands: pick_her leave_her_alone" << endl;
+	while (true) {
+		string com = GetA<string>();
+		if (com == "pick_her") {
+			grid.info.t = GT::None;
+			player.with_princess = true;
+			break;
+		} else if (com == "leave_her_alone") {
+			break;
+		}
+	}
 }
