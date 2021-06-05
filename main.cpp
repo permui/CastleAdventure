@@ -6,9 +6,9 @@
 #include "command.hpp"
 #include "config.hpp"
 
-int main() {
+int main(int args, char *argv[]) {
 	std::map<Position, Grid> mp = GenMap();
-	Player player{{1, 0}, 0, 0, 0};
+	Player player{{1, 0}, 0, 0, args > 1 ? atoi(argv[1]) : 0};
 	std::map<Position, std::string> note {
 		{SUCC_POS, "success"}, {FAIL_POS, "fail"}, {QUIT_POS, "quit"}
 	};
@@ -23,8 +23,13 @@ int main() {
 		std::map<Position, Grid>::iterator it = mp.find(player.pos);
 		assert(it != mp.end());
 		Grid &gd = it->second;
+		std::cout << "---------------" << std::endl;
 		player.show_state(gd);
-		if (!gd.desc.empty()) std::cout << gd.desc << std::endl;
+		std::cout << "---------------" << std::endl;
+		if (!gd.desc.empty()) {
+			std::cout << gd.desc << std::endl;
+			std::cout << "---------------" << std::endl;
+		}
 		Command(player, gd, mp);
 	}
 	return 0;

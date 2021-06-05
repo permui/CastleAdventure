@@ -17,7 +17,10 @@ vector<Grid> GenGrids() {
 			{1, 0},
 			GT::None,
 			"entry",
-			"This is the entry of the castle.",
+			("This is the entry of the castle.\n"
+			"If you want to quit, just type \"quit\".\n"
+			"If you think you have successfully rescued the princess, claim \"success\".\n"
+			"Or just go_left to enter the castle."),
 			{
 				{"quit", [](Player& player, Grid&, Map&)->void {
 					player.pos = QUIT_POS;
@@ -110,7 +113,7 @@ vector<Grid> GenGrids() {
 			{2, 6},
 			GT::None,
 			"Add Game",
-			"Enter \"play\" and you will get an addition. Answer it in 5 seconds and you will get 2 BitCoins.",
+			"Enter \"play\" and you will get an addition. Answer it in 7 seconds and you will get 2 BitCoins.",
 			{
 				{"play", games::add_game},
 				{"go_down", Goto<2, 5>}
@@ -120,7 +123,7 @@ vector<Grid> GenGrids() {
 			{2, 7},
 			GT::None,
 			"Mul Game",
-			"Enter \"play\" and you will get a multiplication. Answer it in 5 seconds and you will get 4 BitCoins.",
+			"Enter \"play\" and you will get a multiplication. Answer it in 10 seconds and you will get 4 BitCoins.",
 			{
 				{"play", games::mul_game},
 				{"go_up", Goto<2, 5>}
@@ -130,7 +133,7 @@ vector<Grid> GenGrids() {
 			{2, 8},
 			GT::None,
 			"Int Game",
-			"Enter \"play\" and you will get an integration. Answer it in 5 seconds and you will get 6 BitCoins.",
+			"Enter \"play\" and you will get an integration. Answer it in 15 seconds and you will get 6 BitCoins.",
 			{
 				{"play", games::int_game},
 				{"go_left", Goto<2, 5>}
@@ -203,8 +206,8 @@ vector<Grid> GenGrids() {
 			"Corridor Step 5",
 			"",
 			{
-				{"go_left", Goto<3, 16>},
-				{"go_right", Goto<3, 14>}
+				{"go_left", Goto<3, 14>},
+				{"go_right", Goto<3, 16>}
 			}
 		},
 		{

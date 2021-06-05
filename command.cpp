@@ -43,12 +43,15 @@ void Command(Player &player, Grid &grid, map<Position, Grid> &mp) {
 
 void EncounterMonster(Player &player, Grid &grid) {
 	cout << "Encounter Monster!" << endl;
+	cout << "A shield (" << shield_price << " BTC) can defend against one time of monster attact, but cannot kill the monster." << endl;
+	cout << "A sword (" << sword_price << " BTC) can kill the monster." << endl;
 	cout << "Commands: use_shield use_sword give_up" << endl;
 	while (true) {
 		string com = GetA<string>();
 		if (com == "use_shield") {
 			if (player.shield > 0) {
 				--player.shield;
+				cout << "You defend the monster!" << endl;
 				break;
 			}
 			cout << "not enough shield, choose an alternative" << endl;
@@ -56,6 +59,7 @@ void EncounterMonster(Player &player, Grid &grid) {
 			if (player.sword > 0) {
 				--player.sword;
 				grid.info.t = GT::None;
+				cout << "You kill the monster!" << endl;
 				break;
 			}
 			cout << "not enogh sword, choose an alternative" << endl;
