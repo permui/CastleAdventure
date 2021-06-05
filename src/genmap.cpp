@@ -232,6 +232,7 @@ vector<Grid> GenGrids() {
 						cout << "You don't have " << tele_price << " BitCoins. Work hard, man!" << endl;
 						return;
 					}
+					player.btc -= tele_price;
 					assert(!mp.empty());
 					default_random_engine eng((random_device())());
 					uniform_int_distribution<int> dis(0, (int)mp.size() - 1);

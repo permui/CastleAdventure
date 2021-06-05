@@ -1,7 +1,7 @@
 CC := gcc
 CXX := g++
 
-TARGET_EXEC := now
+TARGET_EXEC := game
 
 BUILD_DIR := ./build
 SRC_DIRS := ./src
@@ -18,8 +18,10 @@ INC_FLAGS := $(addprefix -I, $(INC_DIRS))
 
 CPPFLAGS := $(INC_FLAGS) -MMD -MP
 
+CXXFLAGS := -O2
+
 $(TARGET_EXEC): $(OBJS)
-	$(CC) $(OBJS) -o $@ $(LDFLAGS)
+	$(CXX) $(OBJS) -o $@ $(LDFLAGS)
 
 $(BUILD_DIR)/%.c.o: %.c
 	mkdir -p $(dir $@)
@@ -29,10 +31,12 @@ $(BUILD_DIR)/%.cpp.o: %.cpp
 	mkdir -p $(dir $@)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
-.PHONY: clean
+.PHONY: clean show
 
 clean:
-	rm -r $(BUILD_DIR) $(TARGET_EXEC)
+	rm -rf $(BUILD_DIR) $(TARGET_EXEC)
 
+show:
+	@echo $(OBJS)
 
 -include $(DEPS)
